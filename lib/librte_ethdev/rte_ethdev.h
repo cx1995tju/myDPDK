@@ -1063,6 +1063,7 @@ struct rte_eth_rxconf {
 /**
  * A structure used to configure a TX ring of an Ethernet port.
  */
+//配置以太网端口的tx 队列
 struct rte_eth_txconf {
 	struct rte_eth_thresh tx_thresh; /**< TX ring threshold registers. */
 	uint16_t tx_rs_thresh; /**< Drives the setting of RS bit on TXDs. */
@@ -1300,6 +1301,7 @@ struct rte_intr_conf {
  * Depending upon the RX multi-queue mode, extra advanced
  * configuration settings may be needed.
  */
+//以太网端口配置信息
 struct rte_eth_conf {
 	uint32_t link_speeds; /**< bitmap of ETH_LINK_SPEED_XXX of speeds to be
 				used. ETH_LINK_SPEED_FIXED disables link
@@ -1511,6 +1513,7 @@ struct rte_eth_rxseg_capa {
  * an Ethernet device, such as the controlling driver of the
  * device, etc...
  */
+//以太网的文本形式的信息
 struct rte_eth_dev_info {
 	struct rte_device *device; /** Generic device information */
 	const char *driver_name; /**< Device Driver name. */
@@ -1523,7 +1526,7 @@ struct rte_eth_dev_info {
 	uint32_t max_rx_pktlen; /**< Maximum configurable length of RX pkt. */
 	/** Maximum configurable size of LRO aggregated packet. */
 	uint32_t max_lro_pkt_size;
-	uint16_t max_rx_queues; /**< Maximum number of RX queues. */
+	uint16_t max_rx_queues; /**< Maximum number of RX queues. */ //保存了最大的rx队列数目
 	uint16_t max_tx_queues; /**< Maximum number of TX queues. */
 	uint32_t max_mac_addrs; /**< Maximum number of MAC addresses. */
 	uint32_t max_hash_mac_addrs;

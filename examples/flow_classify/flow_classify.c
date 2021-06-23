@@ -55,7 +55,7 @@ enum {
 };
 
 static struct{
-	const char *rule_ipv4_name;
+	const char *rule_ipv4_name; //配置文件路径
 } parm_config;
 const char cb_port_delim[] = ":";
 
@@ -214,13 +214,14 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 			DEV_TX_OFFLOAD_MBUF_FAST_FREE;
 
 	/* Configure the Ethernet device. */
+	//一个rx队列，一个tx队列
 	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
 	if (retval != 0)
 		return retval;
 
 	/* Allocate and set up 1 RX queue per Ethernet port. */
 	for (q = 0; q < rx_rings; q++) {
-		retval = rte_eth_rx_queue_setup(port, q, RX_RING_SIZE,
+		retval = rte_eth_rx_queue_setup(port, q, RX_RING_SIZE, //逐个队列的设置
 				rte_eth_dev_socket_id(port), NULL, mbuf_pool);
 		if (retval < 0)
 			return retval;
@@ -312,7 +313,7 @@ lcore_main(struct flow_classifier *cls_app)
 				continue;
 
 			for (i = 0; i < MAX_NUM_CLASSIFY; i++) {
-				if (rules[i]) {
+				if (rules[i]) { //rules数组中是我们从文件中读取到的rule保存在这里
 					ret = rte_flow_classifier_query(
 						cls_app->cls,
 						bufs, nb_rx, rules[i],
@@ -322,6 +323,7 @@ lcore_main(struct flow_classifier *cls_app)
 							"rule [%d] query failed ret [%d]\n\n",
 							i, ret);
 					else {
+						//仅仅打印了rule，没有采取任何动作？？？？
 						printf(
 						"rule[%d] count=%"PRIu64"\n",
 						i, ntuple_stats.counter1);
@@ -640,6 +642,7 @@ add_classify_rule(struct rte_eth_ntuple_filter *ntuple_filter,
 		return ret;
 	}
 
+	//增加一个flow calssify table的条目
 	rule = rte_flow_classify_table_entry_add(
 			cls_app->cls, &attr, pattern_ipv4_5tuple,
 			actions, &key_found, &error);
@@ -650,6 +653,7 @@ add_classify_rule(struct rte_eth_ntuple_filter *ntuple_filter,
 		return ret;
 	}
 
+//添加rule到rules数组
 	rules[num_classify_rules] = rule;
 	num_classify_rules++;
 	return 0;
@@ -688,12 +692,12 @@ add_rules(const char *rule_path, struct flow_classifier *cls_app)
 			break;
 		}
 
-		if (parse_ipv4_5tuple_rule(buff, &ntuple_filter) != 0)
+		if (parse_ipv4_5tuple_rule(buff, &ntuple_filter) != 0) //读取文件信息，并保存到ntuple_filter中
 			rte_exit(EXIT_FAILURE,
 				"%s Line %u: parse rules error\n",
 				rule_path, i);
 
-		if (add_classify_rule(&ntuple_filter, cls_app) != 0)
+		if (add_classify_rule(&ntuple_filter, cls_app) != 0) //根据ntuple_filter向分类器中添加rule
 			rte_exit(EXIT_FAILURE, "add rule error\n");
 
 		total_num++;
@@ -714,6 +718,7 @@ print_usage(const char *prgname)
 }
 
 /* Parse the argument given in the command line of the application */
+//主要是获取配置文件的位置
 static int
 parse_args(int argc, char **argv)
 {
@@ -765,10 +770,10 @@ main(int argc, char *argv[])
 	uint16_t portid;
 	int ret;
 	int socket_id;
-	struct rte_table_acl_params table_acl_params;
-	struct rte_flow_classify_table_params cls_table_params;
-	struct flow_classifier *cls_app;
-	struct rte_flow_classifier_params cls_params;
+	struct rte_table_acl_params table_acl_params; //创建acl table的参数
+	struct rte_flow_classify_table_params cls_table_params; //flow classify table的参数
+	struct flow_classifier *cls_app; //classfier句柄
+	struct rte_flow_classifier_params cls_params; //calssfier的参数
 	uint32_t size;
 
 	/* Initialize the Environment Abstraction Layer (EAL). */
@@ -780,7 +785,7 @@ main(int argc, char *argv[])
 	argv += ret;
 
 	/* parse application arguments (after the EAL ones) */
-	ret = parse_args(argc, argv);
+	ret = parse_args(argc, argv); //进程-specific的参数, 主要是配置文件的位置
 	if (ret < 0)
 		rte_exit(EXIT_FAILURE, "Invalid flow_classify parameters\n");
 
@@ -809,7 +814,7 @@ main(int argc, char *argv[])
 
 	/* Memory allocation */
 	size = RTE_CACHE_LINE_ROUNDUP(sizeof(struct flow_classifier_acl));
-	cls_app = rte_zmalloc(NULL, size, RTE_CACHE_LINE_SIZE);
+	cls_app = rte_zmalloc(NULL, size, RTE_CACHE_LINE_SIZE); //分类器句柄
 	if (cls_app == NULL)
 		rte_exit(EXIT_FAILURE, "Cannot allocate classifier memory\n");
 
@@ -844,6 +849,7 @@ main(int argc, char *argv[])
 	 * for rte_flow_classify_validate and rte_flow_classify_table_entry_add
 	 * API's.
 	 */
+	//读取文件中的rules，加入到句柄中
 	if (add_rules(parm_config.rule_ipv4_name, cls_app)) {
 		rte_flow_classifier_free(cls_app->cls);
 		rte_free(cls_app);

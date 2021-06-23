@@ -295,6 +295,7 @@ rte_flow_validate(uint16_t port_id,
 }
 
 /* Create a flow rule on a given port. */
+//可以动态设置么？可以删除么？
 struct rte_flow *
 rte_flow_create(uint16_t port_id,
 		const struct rte_flow_attr *attr,

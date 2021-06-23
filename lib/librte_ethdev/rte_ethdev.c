@@ -1285,6 +1285,9 @@ eth_dev_validate_offloads(uint16_t port_id, uint64_t req_offloads,
 	return ret;
 }
 
+//rx queue tx queue的数目
+//the number of rx/tx queues to set up for the Ethernet device
+//这个函数应该是所有ethernet API中第一个被调用的，如果设备处于stop状态，可以被再次调用
 int
 rte_eth_dev_configure(uint16_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
 		      const struct rte_eth_conf *dev_conf)
@@ -1692,6 +1695,17 @@ eth_dev_config_restore(struct rte_eth_dev *dev,
 	return 0;
 }
 
+/*
+ *
+ * Start an Ethernet device.
+ * 
+ * The device start step is the last one and consists of setting the configured offload features and in starting the transmit and the receive units of the device.
+ * 
+ * Device RTE_ETH_DEV_NOLIVE_MAC_ADDR flag causes MAC address to be set before PMD port start callback function is invoked.
+ * 
+ * On success, all basic functions exported by the Ethernet API (link status, receive/transmit, and so on) can be invoked.
+ *
+ * */
 int
 rte_eth_dev_start(uint16_t port_id)
 {
@@ -1939,6 +1953,9 @@ rte_eth_rx_queue_check_split(const struct rte_eth_rxseg_split *rx_seg,
 	return 0;
 }
 
+//Allocate and setup ==a== receive queue for an Ethernet device
+/* @param nb_rx_desc: the number of rx desc
+ */
 int
 rte_eth_rx_queue_setup(uint16_t port_id, uint16_t rx_queue_id,
 		       uint16_t nb_rx_desc, unsigned int socket_id,

@@ -48,6 +48,7 @@ enum {
  * part of the setup and then subsequent bytes must be in groups of 4
  * consecutive bytes.
  */
+//形式化的表示ACL的一个域
 struct rte_acl_field_def {
 	uint8_t  type;        /**< type - RTE_ACL_FIELD_TYPE_*. */
 	uint8_t	 size;        /**< size of field 1,2,4, or 8. */

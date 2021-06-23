@@ -19,7 +19,7 @@
 
 static const struct rte_eth_conf port_conf_default = {
 	.rxmode = {
-		.max_rx_pkt_len = RTE_ETHER_MAX_LEN,
+		.max_rx_pkt_len = RTE_ETHER_MAX_LEN, //最大的二层报文大小
 	},
 };
 
@@ -51,11 +51,12 @@ port_init(uint16_t port, struct rte_mempool *mbuf_pool)
 		return retval;
 	}
 
-	if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE)
+	if (dev_info.tx_offload_capa & DEV_TX_OFFLOAD_MBUF_FAST_FREE) //支持多线程发送,不需要锁
 		port_conf.txmode.offloads |=
 			DEV_TX_OFFLOAD_MBUF_FAST_FREE;
 
 	/* Configure the Ethernet device. */
+	//这里配置，那么前面的设备信息怎么拿到的？？？？？
 	retval = rte_eth_dev_configure(port, rx_rings, tx_rings, &port_conf);
 	if (retval != 0)
 		return retval;

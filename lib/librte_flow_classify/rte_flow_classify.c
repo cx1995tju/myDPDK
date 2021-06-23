@@ -35,6 +35,7 @@ struct rte_cls_table {
 
 #define RTE_FLOW_CLASSIFIER_MAX_NAME_SZ 256
 
+//表示一个流分类器
 struct rte_flow_classifier {
 	/* Input parameters */
 	char name[RTE_FLOW_CLASSIFIER_MAX_NAME_SZ];
@@ -42,7 +43,7 @@ struct rte_flow_classifier {
 
 	/* Internal */
 	/* ntuple_filter */
-	struct rte_eth_ntuple_filter ntuple_filter;
+	struct rte_eth_ntuple_filter ntuple_filter; //n元过滤器, 就是流规则匹配的n元组
 
 	/* classifier tables */
 	struct rte_cls_table tables[RTE_FLOW_CLASSIFY_TABLE_MAX];
@@ -256,6 +257,7 @@ rte_flow_classifier_check_params(struct rte_flow_classifier_params *params)
 	return 0;
 }
 
+//创建一个分类器
 struct rte_flow_classifier *
 rte_flow_classifier_create(struct rte_flow_classifier_params *params)
 {
@@ -604,7 +606,7 @@ flow_classifier_lookup(struct rte_flow_classifier *cls,
 		(void **)cls->entries);
 
 	if (!ret && lookup_hit_mask)
-		cls->nb_pkts = nb_pkts;
+		cls->nb_pkts = nb_pkts; //命中了
 	else
 		cls->nb_pkts = 0;
 

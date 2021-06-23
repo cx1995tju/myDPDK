@@ -41,11 +41,11 @@ generate_ipv4_flow(uint16_t port_id, uint16_t rx_q,
 		struct rte_flow_error *error)
 {
 	struct rte_flow_attr attr;
-	struct rte_flow_item pattern[MAX_PATTERN_NUM];
+	struct rte_flow_item pattern[MAX_PATTERN_NUM]; //匹配模式, pattern数组, 所有模式都要匹配上
 	struct rte_flow_action action[MAX_ACTION_NUM];
 	struct rte_flow *flow = NULL;
 	struct rte_flow_action_queue queue = { .index = rx_q };
-	struct rte_flow_item_ipv4 ip_spec;
+	struct rte_flow_item_ipv4 ip_spec; //用于ipv4相关的流信息
 	struct rte_flow_item_ipv4 ip_mask;
 	int res;
 
@@ -72,7 +72,7 @@ generate_ipv4_flow(uint16_t port_id, uint16_t rx_q,
 	 * since in this example we just want to get the
 	 * ipv4 we set this level to allow all.
 	 */
-	pattern[0].type = RTE_FLOW_ITEM_TYPE_ETH;
+	pattern[0].type = RTE_FLOW_ITEM_TYPE_ETH; //模式的类型，针对以太包头的匹配
 
 	/*
 	 * setting the second level of the pattern (IP).

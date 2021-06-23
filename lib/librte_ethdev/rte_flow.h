@@ -2947,7 +2947,7 @@ rte_flow_dynf_metadata_set(struct rte_mbuf *m, uint32_t v)
  */
 struct rte_flow_action {
 	enum rte_flow_action_type type; /**< Action type. */
-	const void *conf; /**< Pointer to action configuration object. */
+	const void *conf; /**< Pointer to action configuration object. 相关动作的私有数据，配置信息 */
 };
 
 /**
