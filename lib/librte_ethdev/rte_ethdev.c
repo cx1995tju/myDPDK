@@ -1289,7 +1289,7 @@ eth_dev_validate_offloads(uint16_t port_id, uint64_t req_offloads,
 //the number of rx/tx queues to set up for the Ethernet device
 //这个函数应该是所有ethernet API中第一个被调用的，如果设备处于stop状态，可以被再次调用
 int
-rte_eth_dev_configure(uint16_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q,
+rte_eth_dev_configure(uint16_t port_id, uint16_t nb_rx_q, uint16_t nb_tx_q, //指定enable的txq rxq的数目
 		      const struct rte_eth_conf *dev_conf)
 {
 	struct rte_eth_dev *dev;
@@ -5399,6 +5399,7 @@ eth_dev_adjust_nb_desc(uint16_t *nb_desc,
 	*nb_desc = RTE_MAX(*nb_desc, desc_lim->nb_min);
 }
 
+//检查rx tx desc的数目是否满足devinfo中的限制，如果不满足的话，进行调整
 int
 rte_eth_dev_adjust_nb_rx_tx_desc(uint16_t port_id,
 				 uint16_t *nb_rx_desc,

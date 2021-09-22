@@ -1513,7 +1513,7 @@ struct rte_eth_rxseg_capa {
  * an Ethernet device, such as the controlling driver of the
  * device, etc...
  */
-//以太网的文本形式的信息
+//以太网设备的文本形式的信息
 struct rte_eth_dev_info {
 	struct rte_device *device; /** Generic device information */
 	const char *driver_name; /**< Device Driver name. */
